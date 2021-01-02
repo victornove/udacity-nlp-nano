@@ -1,0 +1,29 @@
+import re, collections
+
+def getstats(vocab):
+    for word, freq in vocab.items():
+        pairs=collections.defaultdict(int)
+        for i in range(len(word)-1):
+            pairs[word[i], (word[i+1])]+=freq
+    return pairs
+
+def mergevocab(pair,vin):
+    vout={}
+    bigram=re.escape(''.join(pair))
+    p=re.compile(r'(?<!\S)'+bigram+r'(?!\S)')
+    for word in vin:
+        wout=p.sub(''.join(pair),word)
+        vout[wout]=vin[word]
+    return vout
+
+vocab={'low</w>':5,'lowest</w>':2,'newer</w>':6,'wider</w>':3,'new</w>':2}
+nummerges=8
+
+for i in range(nummerges):
+    print(i)
+    pairs=getstats(vocab)
+    print('pairs')
+    print(pairs)
+    best=max(pairs , key=pairs.get)
+    vocab=mergevocab(best, vocab)
+    print(best)
